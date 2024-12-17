@@ -1,0 +1,7 @@
+# .estlintignore file
+build-ssp
+build
+node_modules/
+src/reportWebVitals.ts
+
+
