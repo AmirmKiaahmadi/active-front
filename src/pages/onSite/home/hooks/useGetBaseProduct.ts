@@ -24,6 +24,7 @@ export default function useGetBaseProduct() {
 	}, [data]);
 
 	const handleSelectBaseProduct = (uuid: string) => {
+		console.log("uuid" , uuid  , baseProducts)
 		const baseProductDto: IBaseProductDTO[] = [];
 		baseProducts.map((item) => {
 			if (item.base_uuid === uuid) {

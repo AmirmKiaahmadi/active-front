@@ -34,7 +34,7 @@ api.interceptors.response.use(
 	async function (error) {
 		if (error?.response?.status === 401) {
 			// window.localStorage.clear();
-			return (window.location.href = '/dashboard/home');
+			// return (window.location.href = '/dashboard/home');
 		}
 
 		return Promise.reject(error);

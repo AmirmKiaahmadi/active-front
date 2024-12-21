@@ -7,6 +7,8 @@ import {
   IWeakDays,
 } from "./interface";
 import { QueryFunctionContext } from "@tanstack/react-query";
+import axios from "axios";
+import request2 from "./axios2";
 
 export const getBaseProduct = async () => {
   const { data }: { data: IBaseProduct[] } = await request.get(
@@ -46,3 +48,13 @@ export const timeRanges = async (ctx: QueryFunctionContext) => {
   );
   return data;
 };
+export const reservationTimeranges = async (ctx : QueryFunctionContext) => {
+  const {data} : { data: ITimeRanges } = await request.get(`ambassador/reservation-time-range/${ctx.queryKey[1]}/`)
+  return data
+}
+
+
+export const addressesService = async (ctx : QueryFunctionContext) => {
+  const {data} = await request2.get(" https://aapi.acleaners.ir/api/logistics/address")
+  return data
+}

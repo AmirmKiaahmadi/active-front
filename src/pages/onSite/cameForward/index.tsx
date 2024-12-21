@@ -20,6 +20,8 @@ import {
 
 import fa_IR from "antd/lib/locale/fa_IR";
 import dayjs from "dayjs";
+import useGetReservationTimes from "./hooks/useGetReservationTimes";
+import useGetAddresses from "./hooks/useGetAddresses";
 
 export default function CameForward() {
   const [selectedDay, setSelectedDay] = useState<number | undefined>();
@@ -29,12 +31,17 @@ export default function CameForward() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isCustomDay, setIsCustomDay] = useState<boolean>(false);
   const [customDay, setCustomDay] = useState<string | undefined>();
+  const [customDay2, setCustomDay2] = useState<string | undefined>();
 
   const { mutate } = useGetData(setCards);
 
   const { days } = useGetWeakDay();
 
   const { timeRanges } = useGetTimeRanges(selectedDay);
+
+  const {reservationTimes} = useGetReservationTimes(customDay2)
+
+  const {addresses} = useGetAddresses()
 
   useEffect(() => {
     if (state && state.body) {
@@ -43,11 +50,12 @@ export default function CameForward() {
   }, [state]);
 
   const convertToAntDate = (date: any) => {
-    // let dt_ = moment(date).format("jYYYY-jMM-jDD");
+    let dt_ = moment(new Date(date)).format("YYYY-MM-DD");
+    setCustomDay2(dt_)
     setCustomDay(date);
   };
 
-  console.log("dcasdcadc", moment(customDay).format("jYYYY-jMM-jDD"));
+  console.log("dcasdcadc",addresses);
 
   return (
     <div className="flex flex-col h-full min-h-screen">
@@ -123,7 +131,7 @@ export default function CameForward() {
                 <p>کجا و کی دریافت کنیم؟</p>
                 <p className=" text-[#FF671D]"> + افزودن آدرس</p>
               </div>
-              <p className="my-2">تاریخ و زمان</p>
+             {!isCustomDay ?  <p className="my-2">تاریخ و زمان</p> : ""}
               {!isCustomDay ? (
                 <>
                   <Select
@@ -182,6 +190,32 @@ export default function CameForward() {
                     value={customDay}
                   />
                 </div>
+                {reservationTimes &&
+                      reservationTimes.time_ranges.map((time) => (
+                        <div
+                          className={classNames(
+                            " py-2 px-2 rounded-full text-center mx-1",
+                            time.uuid === selectedTime &&
+                              " border border-primary",
+                            time.is_available ? "bg-gray2 " : " bg-gray"
+                          )}
+                          onClick={() => {
+                            if (time.is_available) {
+                              setSelectedTime(time.uuid);
+                            }
+                          }}
+                        >
+                          {moment(
+                            time.time_range_value.time_from,
+                            "HH:mm:ss"
+                          ).format("HH")}{" "}
+                          -{" "}
+                          {moment(
+                            time.time_range_value.time_to,
+                            "HH:mm:ss"
+                          ).format("HH")}
+                        </div>
+                      ))}
               </ConfigProvider>
             </div>
           )}
@@ -225,7 +259,7 @@ export default function CameForward() {
               </button>
               <button
                 className=" text-primary  w-full py-2 rounded-md flex items-center justify-center my-3 "
-                onClick={() => setIsCustomDay(true)}
+                onClick={() => setIsCustomDay(false)}
               >
                 بازگشت
               </button>
